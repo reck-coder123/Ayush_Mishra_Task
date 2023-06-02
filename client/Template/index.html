@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HODLINFO</title>
+    <link rel="icon" href="https://hodlinfo.com/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-light">
+    <div class="container">
+      <a class="navbar-brand icon" href="http://127.0.0.1:5500/client/Template/index.html">
+        <img src="https://hodlinfo.com/static/media/HODLINFO.8f78fc06.png" alt="hodlinfo" width="20%" height="10%">
+      </a>
+      <div class="select">
+        <select class="form-select" aria-label="Default select example">
+          <option value="INR">INR</option>
+        </select>
+          <select name="name" class="form-select" aria-label="Default select example">
+              <option value="BTC/INR">BTC</option>
+              <option value="XRP/INR">XRP</option>
+              <option value="ETH/INR">ETH</option>
+              <option value="TRX/INR">TRX</option>
+              <option value="EOS/INR">EOS</option>
+              <option value="ZIL/INR">ZIL</option>
+              <option value="BAT/INR">BAT</option>
+              <option value="ZRX/INR">ZRX</option>
+              <option value="REQ/INR">REQ</option>
+              <option value="NULS/INR">NULS</option>
+          </select>
+
+          <a id="buy"  href="https://wazirx.com/invite/sp7pvbt6?utm_source=finstreet&utm_medium=affiliate&utm_campaign=regnow-btn">Buy</a>
+      </div>
+      <div class="social_button">
+        <div class="social">
+          <i class="fa fa-telegram" style="color: white;font-size:30px"></i>
+        <a href="https://hodlinfo.com/connect/telegram">connect telegram</a>
+        </div>
+        
+
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+       
+    </div>
+  </nav>
+  <div class="table1">
+    <h3>Best Prize to trade</h3>
+
+    <table>
+      <thead id="dataName">
+      </thead>
+      <tbody>
+        <tr>
+          <td class="Tlarge">Name</td>
+          <td class="Tlarge">Last</td>
+          <td class="Tlarge" id="buy">Buy</td>
+          <td class="Tlarge">Sell</td>
+          <td class="Tlarge">Volume</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+    
+<div class="table2">
+  <table>
+    <thead>
+      <tr>
+        <th class="T2large">Name</th>
+        <th class="T2large">Last</th>
+        <th class="T2large">Buy</th>
+        <th class="T2large">Sell</th>
+        <th class="T2large">Volume</th>
+        <th class="T2large">Base Unit</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody">
+    </tbody>
+  </table>
+</div>
+    
+  
+    <script>
+      function toggleDarkMode() {
+  const body = document.querySelector('body');
+  body.classList.toggle('dark-mode');
+}
+
+// Event listener for the switch toggle
+const switchToggle = document.querySelector('input[type="checkbox"]');
+switchToggle.addEventListener('change', toggleDarkMode);
+      // Fetch data from the backend API
+      fetch('http://localhost:3001/')
+        .then(response => response.json())
+        .then(data => {
+          const dataBody = document.getElementById('dataBody');
+          data.forEach(entry => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td class="T2small">${entry.name}</td>
+              <td class="T2small">${entry.last}</td>
+              <td class="T2small">${entry.buy}</td>
+              <td class="T2small">${entry.sell}</td>
+              <td class="T2small">${entry.volume}</td>
+              <td class="T2small">${entry.base_unit}</td>
+            `;
+            dataBody.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+        let name = 'btc'; // Set the initial default value
+let selectElement = document.querySelector('select[name="name"]');
+selectElement.addEventListener('change', function() {
+  name = this.value.slice(0, 3).toLowerCase();
+  console.log(name);
+  // Fetch data for the selected name
+  const url = name ? `http://localhost:3001/${name}` : 'http://localhost:3001/btc';
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      const dataName = document.getElementById('dataName');
+      dataName.innerHTML = ''; // Clear previous data
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <th class="large">${data[0].name}</th>
+        <th class="large">${data[0].last}</th>
+        <th class="largest">₹ ${data[0].buy}</th>
+        <th class="large">${data[0].sell}</th>
+        <th class="large">${data[0].volume}</th>
+      `;
+      dataName.appendChild(row);
+    })
+    .catch(error => console.error('Error fetching data:', error));
+});
+
+    </script>  
+</body>
+</html>
